@@ -119,7 +119,7 @@ Le mode multi-site se configure dans `config/cms.php` :
 
 Activez le mode multi-site en definissant la variable d'environnement :
 
-```env
+```bash
 CMS_MULTISITE=true
 ```
 

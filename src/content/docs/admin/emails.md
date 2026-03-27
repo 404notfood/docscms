@@ -104,7 +104,7 @@ L'interface d'administration permet de creer et d'envoyer des campagnes email au
 
 La configuration de l'envoi d'emails se fait via le fichier `.env` :
 
-```env
+```bash
 # SMTP classique
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.exemple.com

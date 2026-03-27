@@ -35,7 +35,7 @@ php artisan key:generate
 
 Editez ensuite le fichier `.env` pour configurer votre base de donnees et les autres parametres :
 
-```env
+```bash
 APP_NAME=ArtisanCMS
 APP_URL=http://localhost:8000
 

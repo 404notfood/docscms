@@ -90,7 +90,7 @@ Lorsque le 2FA est active, l'utilisateur doit saisir un code a 6 chiffres apres 
 
 Les sessions sont configurees dans `config/session.php`. En production, le pilote `redis` est recommande pour les performances et la fiabilite.
 
-```env
+```bash
 SESSION_DRIVER=redis
 SESSION_LIFETIME=120
 SESSION_SECURE_COOKIE=true

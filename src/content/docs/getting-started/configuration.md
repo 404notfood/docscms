@@ -11,7 +11,7 @@ Le fichier `.env` situe a la racine du projet contient les parametres sensibles 
 
 ### Application
 
-```env
+```bash
 APP_NAME=ArtisanCMS
 APP_ENV=production
 APP_KEY=base64:...
@@ -33,7 +33,7 @@ APP_TIMEZONE=Europe/Paris
 
 ### Base de donnees
 
-```env
+```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -44,7 +44,7 @@ DB_PASSWORD=mot_de_passe_securise
 
 ### Messagerie
 
-```env
+```bash
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.example.com
 MAIL_PORT=587
@@ -57,7 +57,7 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 ### Cache, sessions et files d'attente
 
-```env
+```bash
 CACHE_DRIVER=redis
 QUEUE_CONNECTION=redis
 SESSION_DRIVER=redis
@@ -249,13 +249,13 @@ return [
 
 Le prefixe d'administration definit le segment d'URL pour acceder au panneau d'administration. Par defaut, il est regle sur `admin`, ce qui rend l'interface accessible via `/admin`.
 
-```env
+```bash
 CMS_ADMIN_PREFIX=admin
 ```
 
 Pour modifier le prefixe (par exemple, pour des raisons de securite) :
 
-```env
+```bash
 CMS_ADMIN_PREFIX=gestion
 ```
 
@@ -325,7 +325,7 @@ php artisan cms:cache-clear
 
 Le module d'analytics integre collecte des donnees de frequentation sans dependance externe. Les parametres disponibles sont :
 
-```env
+```bash
 CMS_ANALYTICS_ENABLED=true
 CMS_ANALYTICS_RETENTION=365
 ```
@@ -339,7 +339,7 @@ CMS_ANALYTICS_RETENTION=365
 
 Lorsque le mode multi-site est active, ArtisanCMS permet de gerer plusieurs sites depuis une seule installation :
 
-```env
+```bash
 CMS_MULTISITE_ENABLED=true
 ```
 
@@ -376,7 +376,7 @@ La banniere de consentement aux cookies est conforme au RGPD et configurable :
 
 La strategie de mise a jour controle le comportement des mises a jour automatiques pour les plugins et les themes :
 
-```env
+```bash
 CMS_UPDATE_STRATEGY=minor
 ```
 

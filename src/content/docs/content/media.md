@@ -106,7 +106,7 @@ class StockPhotoService
 
 Les clés API sont configurées dans le fichier `.env` :
 
-```env
+```bash
 UNSPLASH_ACCESS_KEY=votre_cle_unsplash
 PEXELS_API_KEY=votre_cle_pexels
 ```

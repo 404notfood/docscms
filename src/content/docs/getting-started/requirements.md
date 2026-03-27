@@ -159,7 +159,7 @@ redis-cli ping
 
 Configurez ensuite les variables d'environnement dans votre fichier `.env` :
 
-```env
+```bash
 CACHE_DRIVER=redis
 QUEUE_CONNECTION=redis
 SESSION_DRIVER=redis

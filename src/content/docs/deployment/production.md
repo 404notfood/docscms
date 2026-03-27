@@ -9,7 +9,7 @@ Ce guide couvre les etapes pour deployer ArtisanCMS sur un serveur de production
 
 ### Variables d'environnement essentielles
 
-```env
+```bash
 APP_ENV=production
 APP_DEBUG=false
 APP_KEY=base64:...     # php artisan key:generate
@@ -22,7 +22,7 @@ Ne deploiez **jamais** avec `APP_DEBUG=true` en production. Cela exposerait des 
 
 ### Base de donnees, cache et messagerie
 
-```env
+```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_DATABASE=artisancms

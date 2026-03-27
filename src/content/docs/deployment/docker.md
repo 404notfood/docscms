@@ -95,7 +95,7 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 
 ## Variables d'environnement
 
-```env
+```bash
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_DATABASE=artisancms

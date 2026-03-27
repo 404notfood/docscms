@@ -89,7 +89,7 @@ php artisan cms:purge-views
 $schedule->command('cms:purge-views')->weekly();
 ```
 
-```env
+```bash
 CMS_ANALYTICS_RETENTION=90
 ```
 
