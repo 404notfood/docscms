@@ -1,40 +1,63 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: ArtisanCMS - Documentation
+description: Documentation officielle d'ArtisanCMS, le CMS moderne open-source construit avec Laravel, React et Inertia.
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
+  tagline: Le CMS moderne, performant et extensible. Construit avec Laravel 13, React 19 et Inertia 2.
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Commencer
+      link: /introduction/overview/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
+    - text: Guide d'installation
+      link: /getting-started/installation/
+      icon: rocket
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## Pourquoi ArtisanCMS ?
+
+ArtisanCMS est un CMS open-source de nouvelle génération, conçu comme une alternative moderne à WordPress, Joomla et Drupal. Il combine la puissance de Laravel avec une interface d'administration React intuitive.
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="Page Builder visuel" icon="pencil">
+		39 types de blocs avec glisser-déposer, responsive design et auto-sauvegarde.
 	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
+	<Card title="Extensible par plugins" icon="add-document">
+		Système de plugins avec hooks/filtres, 7 plugins officiels incluant SEO, e-commerce et IA.
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="Multi-site" icon="laptop">
+		Gérez plusieurs sites depuis une seule installation avec base de données partagée.
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
+	<Card title="E-commerce intégré" icon="star">
+		Produits, variantes, panier, paiement Stripe, gestion des stocks et des commandes.
 	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="Sécurité renforcée" icon="approve-check">
+		Policies granulaires, validation stricte, headers de sécurité, audit trail complet.
+	</Card>
+	<Card title="Performance optimisée" icon="rocket">
+		Cache multi-couches, optimisation d'images WebP, lazy loading et jobs asynchrones.
 	</Card>
 </CardGrid>
+
+## Démarrage rapide
+
+```bash
+# Cloner le projet
+git clone https://github.com/artisancms/artisancms.git
+cd artisancms
+
+# Installer les dépendances
+composer install && npm install
+
+# Configurer l'environnement
+cp .env.example .env
+php artisan key:generate
+
+# Lancer l'installation
+php artisan cms:install --quick
+
+# Démarrer le serveur de développement
+composer run dev
+```
