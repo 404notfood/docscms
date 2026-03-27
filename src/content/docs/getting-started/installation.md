@@ -1,123 +1,99 @@
 ---
 title: Installation
-description: Guide d'installation complet d'ArtisanCMS, en mode classique ou via Docker, avec l'assistant d'installation web.
+description: Guide d'installation complet d'ArtisanCMS avec l'assistant graphique, la ligne de commande ou Docker.
 ---
 
-ArtisanCMS propose deux methodes d'installation : une installation classique sur votre serveur ou une installation conteneurisee via Docker.
+ArtisanCMS propose deux méthodes d'installation : classique sur votre serveur ou conteneurisée via Docker. Dans les deux cas, un **assistant d'installation graphique** vous guide étape par étape.
 
-## Methode 1 : Installation classique
+## Méthode 1 : Installation classique
 
-### Cloner le depot
+### Cloner le dépôt
 
 ```bash
-git clone https://github.com/artisancms/artisancms.git
+git clone https://github.com/404notfood/artisancms.git
 cd artisancms
 ```
 
-### Installer les dependances
+### Installer les dépendances
 
 ```bash
-# Dependances PHP
+# Dépendances PHP
 composer install
 
-# Dependances front-end
+# Dépendances front-end
 npm install
 ```
 
 ### Configurer l'environnement
-
-Copiez le fichier d'environnement et generez la cle d'application :
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Editez ensuite le fichier `.env` pour configurer votre base de donnees et les autres parametres :
+Éditez le fichier `.env` pour configurer au minimum la base de données :
 
 ```bash
-APP_NAME=ArtisanCMS
-APP_URL=http://localhost:8000
-
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=artisancms
 DB_USERNAME=root
 DB_PASSWORD=votre_mot_de_passe
-
-MAIL_MAILER=smtp
-MAIL_HOST=mailpit
-MAIL_PORT=1025
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-
-CACHE_DRIVER=file
-QUEUE_CONNECTION=sync
-SESSION_DRIVER=file
 ```
 
 ### Lancer l'installation
 
-Vous avez deux options pour proceder a l'installation initiale.
+#### Option A : Assistant d'installation graphique (recommandé)
 
-#### Option A : Installation rapide en ligne de commande
+Démarrez le serveur puis ouvrez votre navigateur :
 
-La commande `cms:install --quick` execute automatiquement les migrations, cree un compte administrateur par defaut et configure les parametres de base :
+```bash
+php artisan serve
+```
+
+Rendez-vous sur `http://localhost:8000/install`. L'assistant vous guide en **6 étapes** (voir la section détaillée ci-dessous).
+
+:::tip[Astuce]
+L'assistant graphique est la méthode recommandée. Il vérifie automatiquement les prérequis, teste la connexion à la base de données et configure tout pour vous.
+:::
+
+#### Option B : Installation rapide en ligne de commande
 
 ```bash
 php artisan cms:install --quick
 ```
 
-Cette commande effectue les etapes suivantes :
-1. Verification des prerequis systeme
-2. Execution des migrations de base de donnees
-3. Creation du compte administrateur
-4. Configuration des parametres par defaut du site
-5. Publication des assets
+Cette commande utilise les valeurs par défaut et les variables du `.env` pour tout configurer automatiquement. Le compte admin créé sera `admin@artisancms.dev` avec le mot de passe `password`.
 
-#### Option B : Assistant d'installation web
-
-Lancez le serveur de developpement, puis accedez a l'assistant via votre navigateur :
+Pour une installation interactive en CLI (avec prompts pour chaque paramètre) :
 
 ```bash
-php artisan serve
+php artisan cms:install
 ```
 
-Rendez-vous sur `http://localhost:8000/install` pour demarrer l'assistant d'installation multi-etapes (voir la section [Etapes de l'assistant](#etapes-de-lassistant-dinstallation) ci-dessous).
-
 ### Compiler les assets de production
-
-Une fois l'installation terminee, compilez les assets front-end pour la production :
 
 ```bash
 npm run build
 ```
 
-### Demarrer le serveur de developpement
-
-Plusieurs options sont disponibles pour le developpement local :
+### Démarrer en développement
 
 ```bash
-# Serveur PHP uniquement
-php artisan serve
-
-# Compilation front-end en mode watch
-npm run dev
-
-# Commande combinee : serveur PHP + compilation front-end
+# Commande combinée (recommandée) : serveur Laravel + Vite
 composer run dev
-```
 
-:::tip[Astuce]
-La commande `composer run dev` lance simultanement le serveur Laravel et le watcher Vite. C'est la methode recommandee pour le developpement local.
-:::
+# Ou séparément
+php artisan serve   # Serveur PHP
+npm run dev         # Compilation front-end en mode watch
+```
 
 ---
 
-## Methode 2 : Docker
+## Méthode 2 : Docker
 
-ArtisanCMS inclut un fichier `docker-compose.yml` preconfigure pour un deploiement rapide.
+ArtisanCMS inclut un `docker-compose.yml` préconfigué.
 
 ### Lancer les conteneurs
 
@@ -125,53 +101,18 @@ ArtisanCMS inclut un fichier `docker-compose.yml` preconfigure pour un deploieme
 docker compose up -d
 ```
 
-Cette commande demarre les services suivants :
-- **app** -- Conteneur PHP-FPM avec l'application ArtisanCMS
-- **nginx** -- Serveur web Nginx comme reverse proxy
-- **mysql** -- Base de donnees MySQL 8
-- **redis** -- Serveur de cache Redis
+Services démarrés :
 
-### Acceder a l'application
+| Service | Description |
+|---------|-------------|
+| **app** | PHP-FPM avec ArtisanCMS |
+| **nginx** | Serveur web Nginx |
+| **mysql** | MySQL 8 |
+| **redis** | Cache Redis |
 
-Une fois les conteneurs demarres, l'application est accessible sur le port configure (par defaut `http://localhost:8080`).
+Accédez à `http://localhost:8080/install` pour lancer l'assistant.
 
-### Structure du Dockerfile
-
-Le `Dockerfile` fourni est base sur une image PHP-FPM optimisee :
-
-```dockerfile
-FROM php:8.3-fpm
-
-# Installation des dependances systeme
-RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpng-dev libjpeg-dev libfreetype6-dev \
-    libxml2-dev libzip-dev libonig-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mbstring xml bcmath gd zip
-
-# Installation de Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Installation de Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
-
-WORKDIR /var/www/html
-
-COPY . .
-
-RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
-
-RUN chown -R www-data:www-data storage bootstrap/cache
-
-EXPOSE 9000
-CMD ["php-fpm"]
-```
-
-### Configuration Docker Compose
-
-Exemple de fichier `docker-compose.yml` :
+### Exemple docker-compose.yml
 
 ```yaml
 services:
@@ -203,87 +144,251 @@ services:
       MYSQL_DATABASE: artisancms
     volumes:
       - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
 
   redis:
     image: redis:alpine
-    ports:
-      - "6379:6379"
 
 volumes:
   mysql_data:
 ```
 
 :::note
-Pour un environnement de production Docker, pensez a definir des mots de passe securises, a configurer les volumes persistants et a mettre en place un reverse proxy avec certificat SSL.
+Pour la production Docker, définissez des mots de passe sécurisés, configurez les volumes persistants et mettez en place un certificat SSL.
 :::
 
 ---
 
-## Etapes de l'assistant d'installation
+## Assistant d'installation graphique
 
-L'assistant d'installation web (`/install`) guide l'utilisateur a travers cinq etapes successives.
+L'assistant web (`/install`) guide l'utilisateur à travers **6 étapes**. L'interface est responsive avec une barre de progression latérale (desktop) ou en haut de page (mobile).
 
-### Etape 1 : Verification des prerequis
+:::note[Protection automatique]
+Le middleware `EnsureInstalled` redirige automatiquement vers `/install` si le CMS n'est pas encore installé. Une fois l'installation terminée, l'assistant devient inaccessible (404).
+:::
 
-Le service `RequirementsChecker` analyse automatiquement votre environnement et verifie :
+### Étape 1 : Bienvenue et choix de la langue
 
-- Version de PHP (8.3+ requise)
-- Extensions PHP requises (BCMath, Ctype, Fileinfo, etc.)
-- Permissions d'ecriture sur les repertoires `storage/` et `bootstrap/cache/`
-- Presence de Composer et Node.js
+L'écran d'accueil présente ArtisanCMS et permet de choisir la langue de l'installation et du site :
 
-Un indicateur visuel (vert/rouge) s'affiche pour chaque prerequis. Tous les elements doivent etre valides pour passer a l'etape suivante.
+| Langue | Code |
+|--------|------|
+| Français | `fr` |
+| English | `en` |
+| Español | `es` |
+| Deutsch | `de` |
 
-### Etape 2 : Configuration de la base de donnees
+La langue sélectionnée est appliquée immédiatement à l'interface et sera définie comme locale par défaut du site.
 
-Le service `DatabaseConfigurator` permet de configurer la connexion a la base de donnees :
+### Étape 2 : Licence
 
-- Choix du moteur (MySQL ou MariaDB)
-- Hote, port, nom de la base, identifiants
-- Test de connexion automatique
-- Execution des migrations
+Affichage de la licence MIT avec les conditions d'utilisation. L'utilisateur doit cocher la case d'acceptation pour continuer.
 
-L'assistant tente une connexion de test avant de valider la configuration. En cas d'erreur, un message explicite est affiche.
+Points clés de la licence :
+- Utilisation personnelle et commerciale autorisée
+- Modifications autorisées
+- Distribution avec licence obligatoire
+- Aucune collecte de données
 
-### Etape 3 : Creation du compte administrateur
+### Étape 3 : Vérification des prérequis
 
-Renseignez les informations du premier compte administrateur :
+Le service `RequirementsChecker` analyse automatiquement votre environnement serveur.
 
-- Nom complet
-- Adresse e-mail
-- Mot de passe (minimum 8 caracteres, avec confirmation)
+**Éléments obligatoires** (doivent tous être validés) :
 
-Ce compte dispose de tous les privileges sur l'installation.
+| Prérequis | Détail |
+|-----------|--------|
+| PHP | Version 8.3 ou supérieure |
+| Extensions PHP | PDO, PDO MySQL, OpenSSL, Mbstring, Tokenizer, XML, Ctype, JSON, BCMath, Fileinfo, cURL |
+| Traitement d'images | GD ou Imagick (au moins un) |
+| Permissions d'écriture | `storage/`, `bootstrap/cache/`, `.env`, `content/` |
 
-### Etape 4 : Parametres du site
+**Éléments recommandés** (non bloquants) :
 
-Configurez les informations de base du site :
+| Prérequis | Détail |
+|-----------|--------|
+| Node.js | Version 20 ou supérieure |
+| npm | Version 9 ou supérieure |
 
-- **Nom du site** -- Affiche dans l'en-tete et le titre des pages
-- **Description** -- Meta-description par defaut pour le referencement
-- **Locale** -- Langue principale du site (fr, en, es, de, it, pt, nl)
+Chaque élément affiche un indicateur visuel :
+- ✅ Vert : validé
+- ❌ Rouge : obligatoire manquant (bloque la progression)
+- ⚠️ Jaune : recommandé manquant (non bloquant)
 
-### Etape 5 : Selection d'un template (optionnel)
+Un bouton **Revérifier** permet de relancer l'analyse après avoir corrigé un problème.
 
-Choisissez un template de demarrage parmi les modeles proposes. Cette etape est facultative mais permet de disposer immediatement de :
+### Étape 4 : Configuration de la base de données
 
-- Pages de demonstration preconcues
-- Structure de navigation d'exemple
-- Contenu de demonstration (textes, images)
-- Configuration de theme predefinie
+Configuration de la connexion MySQL/MariaDB avec test de connexion en temps réel.
 
-Si vous preferez partir de zero, vous pouvez ignorer cette etape.
+**Champs du formulaire :**
+
+| Champ | Défaut | Description |
+|-------|--------|-------------|
+| Hôte | `127.0.0.1` | Adresse du serveur MySQL |
+| Port | `3306` | Port MySQL |
+| Base de données | `artisan_cms` | Nom de la base |
+| Utilisateur | `root` | Utilisateur MySQL |
+| Mot de passe | *(vide)* | Mot de passe MySQL |
+| Préfixe des tables | *(vide)* | Préfixe optionnel (ex: `cms_`) |
+| Créer automatiquement | ✅ Activé | Crée la base si elle n'existe pas |
+
+**Test de connexion :**
+
+Le bouton **Tester la connexion** effectue un test AJAX vers le serveur :
+1. Connexion PDO au serveur MySQL
+2. Vérification de l'existence de la base de données
+3. Création automatique si la case est cochée (UTF8MB4)
+4. Affichage de la version MySQL détectée
+
+En cas d'erreur, des messages explicites sont affichés :
+- *Nom d'utilisateur ou mot de passe incorrect*
+- *La base de données n'existe pas*
+- *MySQL n'est pas démarré*
+- *L'adresse du serveur est invalide*
+
+:::tip[Astuce]
+Le test de connexion doit réussir avant de pouvoir passer à l'étape suivante.
+:::
+
+### Étape 5 : Configuration du site et du compte administrateur
+
+Cette étape contient **deux onglets** dans un même formulaire.
+
+#### Onglet « Votre site »
+
+| Champ | Obligatoire | Défaut | Description |
+|-------|:-----------:|--------|-------------|
+| Nom du site | ✅ | `Mon site ArtisanCMS` | Affiché dans l'en-tête et le titre |
+| Description | — | *(vide)* | Tagline / meta-description |
+| URL du site | ✅ | Auto-détectée | URL publique du site |
+| Fuseau horaire | ✅ | `Europe/Paris` | Liste de tous les fuseaux PHP |
+
+#### Onglet « Administrateur »
+
+| Champ | Obligatoire | Validation |
+|-------|:-----------:|------------|
+| Nom complet | ✅ | Minimum 2 caractères |
+| Adresse e-mail | ✅ | Format email valide |
+| Mot de passe | ✅ | Minimum 8 caractères |
+| Confirmation | ✅ | Doit correspondre au mot de passe |
+
+**Indicateur de force du mot de passe :**
+
+Une barre à 6 segments évalue la robustesse en temps réel :
+
+| Critère | Points |
+|---------|:------:|
+| 8 caractères minimum | +1 |
+| 12 caractères ou plus | +1 |
+| Au moins une majuscule | +1 |
+| Au moins une minuscule | +1 |
+| Au moins un chiffre | +1 |
+| Au moins un caractère spécial | +1 |
+
+- 🔴 **Faible** : 0-2 points
+- 🟡 **Moyen** : 3-4 points
+- 🟢 **Fort** : 5-6 points
+
+### Étape 6 : Exécution de l'installation
+
+L'installation s'exécute automatiquement en **11 sous-étapes** séquentielles avec une barre de progression animée.
+
+| Sous-étape | Description technique | Poids |
+|------------|----------------------|:-----:|
+| Environnement | Écriture du fichier `.env` avec les paramètres de base de données | 5 |
+| Migrations | Exécution de `php artisan migrate --force` (création de toutes les tables) | 20 |
+| Rôles | Création des 4 rôles par défaut (Admin, Éditeur, Auteur, Abonné) | 5 |
+| Administrateur | Création du compte admin avec le rôle Admin | 5 |
+| Paramètres | Insertion des 24 paramètres par défaut (général, SEO, mail, contenu, média, maintenance) | 10 |
+| Thème | Installation du thème Default avec ses couleurs et typographies | 15 |
+| Blocs | Enregistrement des 11 blocs de base (section, grid, heading, text, image, video, button, hero, etc.) | 15 |
+| Page d'accueil | Création de la page « Bienvenue » et configuration comme page d'accueil | 10 |
+| Site | Création de l'enregistrement du site principal avec le domaine détecté | 5 |
+| Répertoires | Création des dossiers `content/themes/`, `content/plugins/`, `storage/app/public/media/` | 5 |
+| Finalisation | Écriture du fichier `storage/.installed`, nettoyage des caches, lien storage | 10 |
+
+**Messages de progression :**
+
+| Progression | Message |
+|:-----------:|---------|
+| 0-20% | *Les ouvriers enfilent leurs gants...* |
+| 20-40% | *Les murs montent !* |
+| 40-60% | *On pose le carrelage...* |
+| 60-80% | *La peinture sèche...* |
+| 80-100% | *On plante les fleurs dans le jardin...* |
+| 100% | *Les clés sont sur la porte !* |
+
+En cas d'erreur sur une sous-étape, l'installation s'arrête avec un message explicite et un bouton **Réessayer**.
+
+### Écran de félicitations
+
+Une fois l'installation terminée, un écran de célébration affiche :
+- Un récapitulatif (nom du site, URL, email admin, version)
+- Un rappel de noter le mot de passe administrateur
+- Deux boutons d'accès rapide :
+  - **Entrer dans mon atelier** → accès au panneau d'administration (`/admin`)
+  - **Admirer la façade** → voir le site public
+
+**Prochaines étapes suggérées :**
+1. Choisir un thème (Apparence > Thème)
+2. Créer des pages avec le Page Builder
+3. Configurer les menus de navigation
+4. Explorer les plugins disponibles
 
 ---
 
-## Apres l'installation
+## Installation en ligne de commande
 
-Une fois l'installation terminee, vous pouvez :
+### Mode rapide
 
-- Acceder au panneau d'administration a l'adresse `/admin`
-- Commencer a creer du contenu avec le Page Builder
-- Configurer les plugins et les themes
+```bash
+php artisan cms:install --quick
+```
 
-Consultez le guide [Premier lancement](/getting-started/first-launch/) pour les etapes de configuration initiale recommandees.
+Valeurs par défaut utilisées :
+
+| Paramètre | Valeur |
+|-----------|--------|
+| Langue | `fr` |
+| Base de données | Variables du `.env` |
+| Nom du site | `ArtisanCMS` |
+| URL | Variable `APP_URL` du `.env` |
+| Fuseau horaire | `Europe/Paris` |
+| Email admin | `admin@artisancms.dev` |
+| Mot de passe admin | `password` |
+
+:::caution[Attention]
+Changez immédiatement le mot de passe par défaut après l'installation rapide !
+:::
+
+### Mode interactif
+
+```bash
+php artisan cms:install
+```
+
+La commande vous guidera avec des prompts pour chaque paramètre :
+1. Vérification des prérequis (avec indicateurs visuels ✓/✗/⚠)
+2. Configuration de la base de données (hôte, port, nom, identifiants + test de connexion)
+3. Informations du site (nom, description, URL, fuseau horaire, langue)
+4. Compte administrateur (nom, email, mot de passe)
+
+### Réinstallation
+
+Pour forcer une réinstallation sur un CMS déjà installé :
+
+```bash
+php artisan cms:install --force
+```
+
+---
+
+## Après l'installation
+
+Une fois l'installation terminée :
+
+- Le fichier `storage/.installed` est créé (marqueur d'installation)
+- L'assistant `/install` devient inaccessible (retourne 404)
+- Le panneau d'administration est accessible sur `/admin`
+
+Consultez le guide [Premier lancement](/getting-started/first-launch/) pour les étapes de configuration initiale.

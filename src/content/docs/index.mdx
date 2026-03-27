@@ -45,7 +45,7 @@ ArtisanCMS est un CMS open-source de nouvelle génération, conçu comme une alt
 
 ```bash
 # Cloner le projet
-git clone https://github.com/artisancms/artisancms.git
+git clone https://github.com/404notfood/artisancms.git
 cd artisancms
 
 # Installer les dépendances
@@ -55,9 +55,12 @@ composer install && npm install
 cp .env.example .env
 php artisan key:generate
 
-# Lancer l'installation
-php artisan cms:install --quick
+# Démarrer le serveur
+php artisan serve
+```
 
-# Démarrer le serveur de développement
-composer run dev
+Rendez-vous sur `http://localhost:8000/install` pour lancer l'assistant d'installation graphique, ou utilisez la commande rapide :
+
+```bash
+php artisan cms:install --quick
 ```
