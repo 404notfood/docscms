@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import starlightThemeMdbook from 'starlight-theme-mdbook';
+
 
 // https://astro.build/config
 export default defineConfig({
@@ -8,6 +10,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "ArtisanCMS",
+      plugins: [starlightThemeMdbook()],
       social: [
         {
           icon: "github",
